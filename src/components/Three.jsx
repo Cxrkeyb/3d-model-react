@@ -12,21 +12,28 @@ export const Three = () => {
   const secondTreeGlbRef = useRef();
   const [loading, setLoading] = useState(true);
   const [originalMaterials] = useState(new Map());
+  const [modelsLoaded, setModelsLoaded] = useState(0);
   const { selectedOption } = useOptionsStore();
+  const totalModels = 3; // Total number of models to load
 
   useEffect(() => {
     const loader = new GLTFLoader();
+
+    const handleLoad = () => {
+      setModelsLoaded(prev => prev + 1);
+    };
+
     loader.load(
       "/Barn_Testing.glb",
       (gltf) => {
         gltf.scene.position.set(0, 0, 0);
         glbRef.current = gltf.scene;
-        setLoading(false);
+        handleLoad();
       },
       undefined,
       (error) => {
         console.error("Error loading GLB:", error);
-        setLoading(false);
+        handleLoad();
       }
     );
 
@@ -36,12 +43,12 @@ export const Three = () => {
         gltf.scene.position.set(4, 0, 0);
         treeGlbRef.current = gltf.scene;
         treeGlbRef.current.scale.set(0.1, 0.1, 0.1);
-        setLoading(false);
+        handleLoad();
       },
       undefined,
       (error) => {
         console.error("Error loading GLB:", error);
-        setLoading(false);
+        handleLoad();
       }
     );
 
@@ -51,16 +58,22 @@ export const Three = () => {
         gltf.scene.position.set(-4, 0, 0);
         secondTreeGlbRef.current = gltf.scene;
         secondTreeGlbRef.current.scale.set(0.1, 0.1, 0.1);
-        setLoading(false);
+        handleLoad();
       },
       undefined,
       (error) => {
         console.error("Error loading GLB:", error);
-        setLoading(false);
+        handleLoad();
       }
     );
-    
+
   }, []);
+
+  useEffect(() => {
+    if (modelsLoaded === totalModels) {
+      setLoading(false);
+    }
+  }, [modelsLoaded]);
 
   const colorSelectedMesh = (wallName, color = 0xff0000) => {
     if (!glbRef.current) return;
