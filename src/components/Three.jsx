@@ -102,7 +102,20 @@ export const Three = () => {
     <>
       {/* Camera and controls */}
       <PerspectiveCamera makeDefault position={[-2, 3, -10]} />
-      <OrbitControls ref={orbitControlsRef} />
+      {/* Limita que los usuarios no puedan ver hacia arriba */}
+      <OrbitControls ref={orbitControlsRef}
+        enableZoom={true}
+        enablePan={true}
+        enableRotate={true}
+        enableDamping
+        dampingFactor={0.2}
+        rotateSpeed={0.3}
+        zoomSpeed={1.2}
+        panSpeed={0.8}
+        screenSpacePanning
+        maxPolarAngle={Math.PI / 2.2}
+        minPolarAngle={Math.PI / 4}
+      />
 
       {/* Render the GLB model if loaded */}
       {!loading && glbRef.current && (
